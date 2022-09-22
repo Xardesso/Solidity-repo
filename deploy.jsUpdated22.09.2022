@@ -1,0 +1,27 @@
+const ethers = require("ethers");
+const fs = require("fs");
+async function main() {
+  //http://172.18.224.1:8545
+  const provider = new ethers.providers.JsonRpcProvider(
+    "http://172.18.224.1:8545"
+  );
+  const wallet = new ethers.Wallet(
+    "3034ef8f1660822565f9d3ff378403182ab097c47a64806ad9e4ad3a77a0122b",
+    provider
+  );
+  const abi = fs.readFileSync("./SimpleStorage_sol_SimpleStorage.abi", "utf8");
+  const binary = fs.readFileSync(
+    "./SimpleStorage_sol_SimpleStorage.bin",
+    "utf8"
+  );
+  const contractFactory = new ethers.ContractFactory(abi, binary, wallet);
+  console.log("deploying please wait...");
+  const contract = await contractFactory.deploy();
+  console.log(contract);
+}
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
